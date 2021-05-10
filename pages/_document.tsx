@@ -1,10 +1,21 @@
 import Document, { Html, Head, Main, NextScript, DocumentInitialProps } from 'next/document';
 import type { DocumentContext } from 'next/document';
+import { CssBaseline } from '@geist-ui/react';
 
 class MyDocument extends Document {
   static getInitialProps = async (ctx: DocumentContext): Promise<DocumentInitialProps> => {
     const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
+    const styles = CssBaseline.flush();
+
+    return {
+      ...initialProps,
+      styles: (
+        <>
+          {initialProps.styles}
+          {styles}
+        </>
+      ),
+    };
   };
 
   render(): JSX.Element {
