@@ -2,8 +2,33 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Text, Input, Button, Divider, Spacer } from '@geist-ui/react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+
+type FormData = {
+  email: string;
+  password: string;
+  confirm: string;
+};
 
 const Register: NextPage = () => {
+  const { register, handleSubmit, formState, setError, clearErrors } = useForm<FormData>();
+
+  const onChange = (): void => clearErrors(['password', 'confirm']);
+
+  const onSubmit: SubmitHandler<FormData> = ({ email, password, confirm }: FormData) => {
+    if (password !== confirm) {
+      return (
+        [
+          { type: 'conflict', name: 'password' },
+          { type: 'conflict', name: 'confirm' },
+        ] as const
+      ).forEach(({ name, type }) => {
+        setError(name, { type });
+      });
+    }
+    return { email, password };
+  };
+
   return (
     <>
       <Head>
@@ -19,24 +44,39 @@ const Register: NextPage = () => {
             </Text>
           </header>
           <Spacer y={2} />
-          <form className="grid gap-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
             <Text h4>Create your account</Text>
-            <Input type="email" width="100%">
+            <Input
+              type="email"
+              width="100%"
+              status={formState.errors.email && 'error'}
+              {...register('email', { required: true })}
+            >
               <Text small b>
                 Email Address
               </Text>
             </Input>
-            <Input.Password width="100%">
+            <Input.Password
+              width="100%"
+              status={formState.errors.password && 'error'}
+              {...register('password', { required: true })}
+              onChange={onChange}
+            >
               <Text small b>
                 Password
               </Text>
             </Input.Password>
-            <Input.Password width="100%">
+            <Input.Password
+              width="100%"
+              status={formState.errors.confirm && 'error'}
+              {...register('confirm', { required: true })}
+              onChange={onChange}
+            >
               <Text small b>
                 Confirm Password
               </Text>
             </Input.Password>
-            <Button shadow type="success">
+            <Button htmlType="submit" shadow type="success">
               Sign Up
             </Button>
             <Divider y={2}>

@@ -2,8 +2,20 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Text, Input, Button, Divider, Spacer } from '@geist-ui/react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 const Login: NextPage = () => {
+  const { register, handleSubmit, formState } = useForm<FormData>();
+
+  const onSubmit: SubmitHandler<FormData> = ({ email, password }: FormData) => {
+    return { email, password };
+  };
+
   return (
     <>
       <Head>
@@ -18,19 +30,28 @@ const Login: NextPage = () => {
             </Text>
           </header>
           <Spacer y={2} />
-          <form className="grid gap-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
             <Text h4>Log in to your vault</Text>
-            <Input type="email" width="100%">
+            <Input
+              type="email"
+              width="100%"
+              status={formState.errors.email && 'error'}
+              {...register('email', { required: true })}
+            >
               <Text small b>
                 Email Address
               </Text>
             </Input>
-            <Input.Password width="100%">
+            <Input.Password
+              width="100%"
+              status={formState.errors.password && 'error'}
+              {...register('password', { required: true, min: 6 })}
+            >
               <Text small b>
                 Password
               </Text>
             </Input.Password>
-            <Button shadow type="success">
+            <Button htmlType="submit" shadow type="success">
               Log In
             </Button>
             <Divider y={2}>
