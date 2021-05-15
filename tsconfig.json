@@ -14,6 +14,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
+      "@/components/*": ["./components/*"],
       "@/libs/*": ["./libs/*"]
     },
     "resolveJsonModule": true,
