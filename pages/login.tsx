@@ -1,26 +1,20 @@
 import type { NextPage } from 'next';
-import Head from 'next/head';
+import type { LogInTypes } from '@/libs/form-data';
 import Link from 'next/link';
 import { Text, Input, Button, Divider, Spacer } from '@geist-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-
-type FormData = {
-  email: string;
-  password: string;
-};
+import { MetaHead } from '@/libs/components/.';
 
 const Login: NextPage = () => {
-  const { register, handleSubmit, formState } = useForm<FormData>();
+  const { register, handleSubmit, formState } = useForm<LogInTypes>();
 
-  const onSubmit: SubmitHandler<FormData> = ({ email, password }: FormData) => {
+  const onSubmit: SubmitHandler<LogInTypes> = ({ email, password }: LogInTypes) => {
     return { email, password };
   };
 
   return (
     <>
-      <Head>
-        <title>Log In – Ultimo Pase</title>
-      </Head>
+      <MetaHead title="Log In" />
       <div className="flex flex-row min-h-screen">
         <section className="w-98 p-12 box-border flex-shrink-0 sm:w-screen">
           <header>
@@ -73,15 +67,6 @@ const Login: NextPage = () => {
         </section>
         <div className="canvas w-full flex-grow sm:hidden" />
       </div>
-      <style jsx>{`
-        .canvas {
-          background-color: #ff4800;
-          background-image: radial-gradient(#e3e3e3 1px, transparent 0),
-            radial-gradient(#e3e3e3 1px, transparent 0);
-          background-position: 0 0, 25px 25px;
-          background-size: 50px 50px;
-        }
-      `}</style>
     </>
   );
 };

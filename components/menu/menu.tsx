@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, Tabs, Button, useCurrentState } from '@geist-ui/react';
-
-const tabData = [
-  { name: 'Overview' },
-  { name: 'Vault' },
-  { name: 'Activity' },
-  { name: 'Settings' },
-];
+import { tabData } from '@/libs/.';
 
 const Menu = (): React.ReactElement => {
   const [fixed, setFixed, fixedRef] = useCurrentState<boolean>(false);

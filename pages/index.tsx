@@ -1,12 +1,10 @@
 import type { NextPage } from 'next';
-import Head from 'next/head';
+import { MetaHead } from '@/libs/components/.';
 
 const Home: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>Safe Vault for Secrets – Ultimo Pase</title>
-      </Head>
+      <MetaHead title="Safe Vault for Secrets" />
     </>
   );
 };
