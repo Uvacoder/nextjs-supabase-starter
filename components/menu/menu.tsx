@@ -1,9 +1,25 @@
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Text, Tabs, Button, useCurrentState } from '@geist-ui/react';
-import { tabData } from '@/libs/.';
+import { useLocale, tabData } from '@/libs/.';
 
 const Menu = (): React.ReactElement => {
+  const router = useRouter();
+  const { tabbar: currentUrlTabValue, locale } = useLocale();
+  const [tabValue, setTabValue, tabValueRef] = useCurrentState<string>('');
   const [fixed, setFixed, fixedRef] = useCurrentState<boolean>(false);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => setTabValue(currentUrlTabValue), [currentUrlTabValue]);
+
+  useEffect(() => {
+    const shouldRedirectDefaultPage = currentUrlTabValue !== tabValueRef.current;
+    if (!shouldRedirectDefaultPage) return;
+    const defaultPath = `/${locale}/${tabValueRef.current}`;
+    void router.push(defaultPath);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabValue, currentUrlTabValue]);
 
   useEffect(() => {
     const scrollHandler = () => {
@@ -36,7 +52,7 @@ const Menu = (): React.ReactElement => {
         <div className={`pointer-events-none w-0 ${fixed ? 'h-12 visible' : 'h-0 invisible'}`} />
         <nav className={`h-12 w-full ${fixed ? 'fixed inset-x-0 top-0' : 'relative'}`}>
           <div className="inner max-w-xl h-full px-5 flex items-end my-0 mx-auto">
-            <Tabs>
+            <Tabs value={tabValue} onChange={(val) => setTabValue(val)}>
               {tabData.map((tab, index) => (
                 <Tabs.Item label={tab.name} value={tab.name.toLowerCase()} key={index} />
               ))}
