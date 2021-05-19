@@ -5,7 +5,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const Page = ({ className, children }: Props): React.ReactNode => {
+const Page = ({ className, children }: Props): React.ReactElement => {
   return <div className={`max-w-xl mx-auto p-5 ${className}`}>{children}</div>;
 };
 
