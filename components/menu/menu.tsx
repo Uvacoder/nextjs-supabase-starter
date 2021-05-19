@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Text, Tabs, Button, useCurrentState } from '@geist-ui/react';
 import { useLocale, tabData } from '@/libs/.';
+import { Header } from '@/components/.';
 
 const Menu = (): React.ReactElement => {
   const router = useRouter();
@@ -60,6 +61,11 @@ const Menu = (): React.ReactElement => {
           </div>
         </nav>
       </div>
+      {tabData
+        .filter((tab) => tab.name.toLowerCase() === tabValue)
+        .map((tab, index) => (
+          <Header title={tab.name} description={tab.description} key={index} />
+        ))}
       <style jsx>{`
         nav {
           background: rgb(255, 255, 255);
