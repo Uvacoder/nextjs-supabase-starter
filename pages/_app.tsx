@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { CssBaseline, GeistProvider } from '@geist-ui/react';
+import { UserMenu } from '@/libs/components/.';
 import 'tailwindcss/tailwind.css';
 import 'inter-ui/inter.css';
 
@@ -9,6 +10,7 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
     <>
       <GeistProvider>
         <CssBaseline />
+        <UserMenu />
         <Component {...pageProps} />
       </GeistProvider>
       <style global jsx>{`
