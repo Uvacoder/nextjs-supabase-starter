@@ -15,7 +15,8 @@
     "noUnusedParameters": true,
     "paths": {
       "@/components/*": ["./components/*"],
-      "@/libs/*": ["./libs/*"]
+      "@/libs/*": ["./libs/*"],
+      "@/supabase/*": ["./supabase/*"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

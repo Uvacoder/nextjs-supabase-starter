@@ -7,3 +7,6 @@
 # next.js
 /public
 /.next
+
+# supabase
+/supabase/types.ts

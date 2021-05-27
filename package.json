@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@geist-ui/react": "^2.1.5",
+    "@supabase/supabase-js": "^1.19.0",
     "inter-ui": "^3.18.1",
     "next": "10.2.0",
     "react": "17.0.2",
