@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Text, Tabs, Button, useCurrentState } from '@geist-ui/react';
+import { Text, Tabs, Button, useCurrentState, useToasts } from '@geist-ui/react';
 import { useLocale, tabData } from '@/libs/.';
 import { Header } from '@/components/.';
+import { supabase } from '@/supabase/.';
 
 const Menu = (): React.ReactElement => {
   const router = useRouter();
   const { tabbar: currentUrlTabValue, locale } = useLocale();
   const [tabValue, setTabValue, tabValueRef] = useCurrentState<string>('');
   const [fixed, setFixed, fixedRef] = useCurrentState<boolean>(false);
+  const [, setToast] = useToasts();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setTabValue(currentUrlTabValue), [currentUrlTabValue]);
@@ -32,6 +34,11 @@ const Menu = (): React.ReactElement => {
     return () => document.removeEventListener('scroll', scrollHandler);
   });
 
+  const onLogOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) return setToast({ text: error.message, type: 'error' });
+  };
+
   return (
     <>
       <div className="select-none">
@@ -45,7 +52,7 @@ const Menu = (): React.ReactElement => {
             <Button auto size="small" type="abort">
               Feedback
             </Button>
-            <Button auto size="small">
+            <Button auto size="small" onClick={onLogOut}>
               Log Out
             </Button>
           </div>
