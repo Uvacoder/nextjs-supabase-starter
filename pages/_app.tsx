@@ -1,11 +1,32 @@
+import { useEffect } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { CssBaseline, GeistProvider } from '@geist-ui/react';
 import { UserMenu } from '@/libs/components/.';
+import { supabase } from '@/supabase/.';
 import 'tailwindcss/tailwind.css';
 import 'inter-ui/inter.css';
 
 const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      await fetch('/api/cookie', {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        credentials: 'same-origin',
+        body: JSON.stringify({ event, session }),
+      });
+      if (event === 'SIGNED_IN') return await router.push('/u/overview');
+      await router.push('/login');
+    });
+    return () => authListener?.unsubscribe();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <GeistProvider>
