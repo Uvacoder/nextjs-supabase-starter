@@ -1,16 +1,26 @@
+import { useState } from 'react';
 import type { NextPage } from 'next';
 import type { SignUpTypes } from '@/libs/form-data';
 import Link from 'next/link';
-import { Text, Input, Button, Divider, Spacer } from '@geist-ui/react';
+import { Text, Input, Button, Divider, Spacer, useToasts } from '@geist-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { Verify } from '@/components/.';
 import { MetaHead } from '@/libs/components/.';
+import { supabase } from '@/supabase/.';
 
 const Register: NextPage = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<false | string>(false);
   const { register, handleSubmit, formState, setError, clearErrors } = useForm<SignUpTypes>();
+  const [, setToast] = useToasts();
 
   const onChange = (): void => clearErrors(['password', 'confirm']);
 
-  const onSubmit: SubmitHandler<SignUpTypes> = ({ email, password, confirm }: SignUpTypes) => {
+  const onSubmit: SubmitHandler<SignUpTypes> = async ({
+    email,
+    password,
+    confirm,
+  }: SignUpTypes) => {
     if (password !== confirm) {
       return (
         [
@@ -21,8 +31,16 @@ const Register: NextPage = () => {
         setError(name, { type });
       });
     }
-    return { email, password };
+    setLoading(true);
+    const { user, error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      setToast({ text: error.message, type: 'error' });
+      return setLoading(false);
+    }
+    return setEmail(user?.email as string);
   };
+
+  if (email) return <Verify email={email} />;
 
   return (
     <>
@@ -44,6 +62,7 @@ const Register: NextPage = () => {
               width="100%"
               status={formState.errors.email && 'error'}
               {...register('email', { required: true })}
+              disabled={loading}
             >
               <Text small b>
                 Email Address
@@ -54,6 +73,7 @@ const Register: NextPage = () => {
               status={formState.errors.password && 'error'}
               {...register('password', { required: true })}
               onChange={onChange}
+              disabled={loading}
             >
               <Text small b>
                 Password
@@ -64,12 +84,13 @@ const Register: NextPage = () => {
               status={formState.errors.confirm && 'error'}
               {...register('confirm', { required: true })}
               onChange={onChange}
+              disabled={loading}
             >
               <Text small b>
                 Confirm Password
               </Text>
             </Input.Password>
-            <Button htmlType="submit" shadow type="success">
+            <Button htmlType="submit" shadow type="success" loading={loading}>
               Sign Up
             </Button>
             <Divider y={2}>

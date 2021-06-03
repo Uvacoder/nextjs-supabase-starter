@@ -1,15 +1,24 @@
+import { useState } from 'react';
 import type { NextPage } from 'next';
 import type { LogInTypes } from '@/libs/form-data';
 import Link from 'next/link';
-import { Text, Input, Button, Divider, Spacer } from '@geist-ui/react';
+import { Text, Input, Button, Divider, Spacer, useToasts } from '@geist-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { MetaHead } from '@/libs/components/.';
+import { supabase } from '@/supabase/.';
 
 const Login: NextPage = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const { register, handleSubmit, formState } = useForm<LogInTypes>();
+  const [, setToast] = useToasts();
 
-  const onSubmit: SubmitHandler<LogInTypes> = ({ email, password }: LogInTypes) => {
-    return { email, password };
+  const onSubmit: SubmitHandler<LogInTypes> = async ({ email, password }: LogInTypes) => {
+    setLoading(true);
+    const { error } = await supabase.auth.signIn({ email, password });
+    if (error) {
+      setToast({ text: error.message, type: 'error' });
+      return setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +40,7 @@ const Login: NextPage = () => {
               width="100%"
               status={formState.errors.email && 'error'}
               {...register('email', { required: true })}
+              disabled={loading}
             >
               <Text small b>
                 Email Address
@@ -40,12 +50,13 @@ const Login: NextPage = () => {
               width="100%"
               status={formState.errors.password && 'error'}
               {...register('password', { required: true, min: 6 })}
+              disabled={loading}
             >
               <Text small b>
                 Password
               </Text>
             </Input.Password>
-            <Button htmlType="submit" shadow type="success">
+            <Button htmlType="submit" shadow type="success" loading={loading}>
               Log In
             </Button>
             <Divider y={2}>
