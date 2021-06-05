@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { NextPage } from 'next';
+import type { NextPage, GetServerSideProps } from 'next';
 import type { LogInTypes } from '@/libs/form-data';
 import Link from 'next/link';
 import { Text, Input, Button, Divider, Spacer, useToasts } from '@geist-ui/react';
@@ -80,6 +80,14 @@ const Login: NextPage = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { user } = await supabase.auth.api.getUserByCookie(context.req);
+
+  if (user) return { props: {}, redirect: { destination: '/u/overview', permanent: false } };
+
+  return { props: {} };
 };
 
 export default Login;
