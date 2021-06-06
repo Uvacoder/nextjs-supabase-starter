@@ -10,6 +10,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
+    'plugin:@next/next/recommended',
   ],
   rules: {
     'react/react-in-jsx-scope': 'off',

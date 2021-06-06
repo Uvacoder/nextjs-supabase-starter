@@ -1,4 +1,5 @@
 module.exports = {
+  reactStrictMode: true,
   async redirects() {
     return [
       {
@@ -7,8 +8,5 @@ module.exports = {
         permanent: true,
       },
     ];
-  },
-  future: {
-    webpack5: true,
   },
 };
