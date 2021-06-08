@@ -21,6 +21,11 @@ const Login: NextPage = () => {
     }
   };
 
+  const withAuthProvider = async () => {
+    const { error } = await supabase.auth.signIn({ provider: 'google' });
+    if (error) return setToast({ text: error.message, type: 'error' });
+  };
+
   return (
     <>
       <MetaHead title="Log In" />
@@ -64,7 +69,7 @@ const Login: NextPage = () => {
                 OR
               </Text>
             </Divider>
-            <Button shadow type="secondary">
+            <Button shadow type="secondary" onClick={withAuthProvider}>
               Log In With Google
             </Button>
           </form>

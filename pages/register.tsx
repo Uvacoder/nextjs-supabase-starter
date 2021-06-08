@@ -40,6 +40,11 @@ const Register: NextPage = () => {
     return setEmail(user?.email as string);
   };
 
+  const withAuthProvider = async () => {
+    const { error } = await supabase.auth.signIn({ provider: 'google' });
+    if (error) return setToast({ text: error.message, type: 'error' });
+  };
+
   if (email) return <Verify email={email} />;
 
   return (
@@ -98,7 +103,7 @@ const Register: NextPage = () => {
                 OR
               </Text>
             </Divider>
-            <Button shadow type="secondary">
+            <Button shadow type="secondary" onClick={withAuthProvider}>
               Sign Up With Google
             </Button>
           </form>
