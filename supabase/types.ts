@@ -12,6 +12,181 @@ export interface paths {
       };
     };
   };
+  "/profile": {
+    get: {
+      parameters: {
+        query: {
+          /** Unique identification string */
+          id?: parameters["rowFilter.profile.id"];
+          /** Personal authorization address */
+          email?: parameters["rowFilter.profile.email"];
+          /** Method used for authorization */
+          provider?: parameters["rowFilter.profile.provider"];
+          /** Name of registered user */
+          full_name?: parameters["rowFilter.profile.full_name"];
+          /** Custom avatar type for user */
+          avatar_type?: parameters["rowFilter.profile.avatar_type"];
+          /** Personal identification number */
+          pin?: parameters["rowFilter.profile.pin"];
+          /** Time of account confirmation */
+          confirmed_at?: parameters["rowFilter.profile.confirmed_at"];
+          /** Time of account creation */
+          created_at?: parameters["rowFilter.profile.created_at"];
+          /** Filtering Columns */
+          select?: parameters["select"];
+          /** Ordering */
+          order?: parameters["order"];
+          /** Limiting and Pagination */
+          offset?: parameters["offset"];
+          /** Limiting and Pagination */
+          limit?: parameters["limit"];
+        };
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters["range"];
+          /** Limiting and Pagination */
+          "Range-Unit"?: parameters["rangeUnit"];
+          /** Preference */
+          Prefer?: parameters["preferCount"];
+        };
+      };
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions["profile"][];
+        };
+        /** Partial Content */
+        206: unknown;
+      };
+    };
+    post: {
+      parameters: {
+        body: {
+          /** profile */
+          profile?: definitions["profile"];
+        };
+        query: {
+          /** Filtering Columns */
+          select?: parameters["select"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** Created */
+        201: unknown;
+      };
+    };
+    delete: {
+      parameters: {
+        query: {
+          /** Unique identification string */
+          id?: parameters["rowFilter.profile.id"];
+          /** Personal authorization address */
+          email?: parameters["rowFilter.profile.email"];
+          /** Method used for authorization */
+          provider?: parameters["rowFilter.profile.provider"];
+          /** Name of registered user */
+          full_name?: parameters["rowFilter.profile.full_name"];
+          /** Custom avatar type for user */
+          avatar_type?: parameters["rowFilter.profile.avatar_type"];
+          /** Personal identification number */
+          pin?: parameters["rowFilter.profile.pin"];
+          /** Time of account confirmation */
+          confirmed_at?: parameters["rowFilter.profile.confirmed_at"];
+          /** Time of account creation */
+          created_at?: parameters["rowFilter.profile.created_at"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+    patch: {
+      parameters: {
+        query: {
+          /** Unique identification string */
+          id?: parameters["rowFilter.profile.id"];
+          /** Personal authorization address */
+          email?: parameters["rowFilter.profile.email"];
+          /** Method used for authorization */
+          provider?: parameters["rowFilter.profile.provider"];
+          /** Name of registered user */
+          full_name?: parameters["rowFilter.profile.full_name"];
+          /** Custom avatar type for user */
+          avatar_type?: parameters["rowFilter.profile.avatar_type"];
+          /** Personal identification number */
+          pin?: parameters["rowFilter.profile.pin"];
+          /** Time of account confirmation */
+          confirmed_at?: parameters["rowFilter.profile.confirmed_at"];
+          /** Time of account creation */
+          created_at?: parameters["rowFilter.profile.created_at"];
+        };
+        body: {
+          /** profile */
+          profile?: definitions["profile"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+  };
+  "/rpc/create_new_profile": {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown };
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferParams"];
+        };
+      };
+      responses: {
+        /** OK */
+        200: unknown;
+      };
+    };
+  };
+}
+
+export interface definitions {
+  profile: {
+    /**
+     * Unique identification string
+     *
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: string;
+    /** Personal authorization address */
+    email: string;
+    /** Method used for authorization */
+    provider: string;
+    /** Name of registered user */
+    full_name?: string;
+    /** Custom avatar type for user */
+    avatar_type: string;
+    /** Personal identification number */
+    pin?: string;
+    /** Time of account confirmation */
+    confirmed_at: string;
+    /** Time of account creation */
+    created_at: string;
+  };
 }
 
 export interface parameters {
@@ -35,6 +210,24 @@ export interface parameters {
   offset: string;
   /** Limiting and Pagination */
   limit: string;
+  /** profile */
+  "body.profile": definitions["profile"];
+  /** Unique identification string */
+  "rowFilter.profile.id": string;
+  /** Personal authorization address */
+  "rowFilter.profile.email": string;
+  /** Method used for authorization */
+  "rowFilter.profile.provider": string;
+  /** Name of registered user */
+  "rowFilter.profile.full_name": string;
+  /** Custom avatar type for user */
+  "rowFilter.profile.avatar_type": string;
+  /** Personal identification number */
+  "rowFilter.profile.pin": string;
+  /** Time of account confirmation */
+  "rowFilter.profile.confirmed_at": string;
+  /** Time of account creation */
+  "rowFilter.profile.created_at": string;
 }
 
 export interface operations {}
