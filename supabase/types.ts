@@ -144,6 +144,137 @@ export interface paths {
       };
     };
   };
+  "/timeline": {
+    get: {
+      parameters: {
+        query: {
+          /** Serial identification for event */
+          task?: parameters["rowFilter.timeline.task"];
+          /** Unique identification string */
+          id?: parameters["rowFilter.timeline.id"];
+          /** Log of initiated event */
+          event?: parameters["rowFilter.timeline.event"];
+          /** Information relating to event */
+          description?: parameters["rowFilter.timeline.description"];
+          /** Time of event initialisation */
+          timestamp?: parameters["rowFilter.timeline.timestamp"];
+          /** Filtering Columns */
+          select?: parameters["select"];
+          /** Ordering */
+          order?: parameters["order"];
+          /** Limiting and Pagination */
+          offset?: parameters["offset"];
+          /** Limiting and Pagination */
+          limit?: parameters["limit"];
+        };
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters["range"];
+          /** Limiting and Pagination */
+          "Range-Unit"?: parameters["rangeUnit"];
+          /** Preference */
+          Prefer?: parameters["preferCount"];
+        };
+      };
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions["timeline"][];
+        };
+        /** Partial Content */
+        206: unknown;
+      };
+    };
+    post: {
+      parameters: {
+        body: {
+          /** timeline */
+          timeline?: definitions["timeline"];
+        };
+        query: {
+          /** Filtering Columns */
+          select?: parameters["select"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** Created */
+        201: unknown;
+      };
+    };
+    delete: {
+      parameters: {
+        query: {
+          /** Serial identification for event */
+          task?: parameters["rowFilter.timeline.task"];
+          /** Unique identification string */
+          id?: parameters["rowFilter.timeline.id"];
+          /** Log of initiated event */
+          event?: parameters["rowFilter.timeline.event"];
+          /** Information relating to event */
+          description?: parameters["rowFilter.timeline.description"];
+          /** Time of event initialisation */
+          timestamp?: parameters["rowFilter.timeline.timestamp"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+    patch: {
+      parameters: {
+        query: {
+          /** Serial identification for event */
+          task?: parameters["rowFilter.timeline.task"];
+          /** Unique identification string */
+          id?: parameters["rowFilter.timeline.id"];
+          /** Log of initiated event */
+          event?: parameters["rowFilter.timeline.event"];
+          /** Information relating to event */
+          description?: parameters["rowFilter.timeline.description"];
+          /** Time of event initialisation */
+          timestamp?: parameters["rowFilter.timeline.timestamp"];
+        };
+        body: {
+          /** timeline */
+          timeline?: definitions["timeline"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+  };
+  "/rpc/add_sign_in": {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown };
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferParams"];
+        };
+      };
+      responses: {
+        /** OK */
+        200: unknown;
+      };
+    };
+  };
   "/rpc/create_new_profile": {
     post: {
       parameters: {
@@ -187,6 +318,23 @@ export interface definitions {
     /** Time of account creation */
     created_at: string;
   };
+  timeline: {
+    /**
+     * Serial identification for event
+     *
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    task: number;
+    /** Unique identification string */
+    id: string;
+    /** Log of initiated event */
+    event: string;
+    /** Information relating to event */
+    description: string;
+    /** Time of event initialisation */
+    timestamp: string;
+  };
 }
 
 export interface parameters {
@@ -228,6 +376,18 @@ export interface parameters {
   "rowFilter.profile.confirmed_at": string;
   /** Time of account creation */
   "rowFilter.profile.created_at": string;
+  /** timeline */
+  "body.timeline": definitions["timeline"];
+  /** Serial identification for event */
+  "rowFilter.timeline.task": string;
+  /** Unique identification string */
+  "rowFilter.timeline.id": string;
+  /** Log of initiated event */
+  "rowFilter.timeline.event": string;
+  /** Information relating to event */
+  "rowFilter.timeline.description": string;
+  /** Time of event initialisation */
+  "rowFilter.timeline.timestamp": string;
 }
 
 export interface operations {}

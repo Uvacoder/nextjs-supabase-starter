@@ -52,3 +52,47 @@ EXECUTE PROCEDURE public.create_new_profile();
 ```
 
 </details>
+
+### Timeline
+
+Create a registry of user actions to map out a timeline. Actions such as `SIGN_IN` are accounted for the log. Each action has an `event`, `description`, and `timestamp` which is tied to an `id`. The `SIGN_IN` event provides the authentication method used.
+
+<details>
+<summary>Create Timeline</summary>
+
+```sql
+CREATE TABLE timeline (
+  task SERIAL NOT NULL PRIMARY KEY,
+  id UUID NOT NULL,
+  event TEXT NOT NULL,
+  description TEXT NOT NULL,
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT Timezone('utc'::text, Now()) NOT NULL
+);
+
+CREATE OR REPLACE FUNCTION public.add_sign_in()
+returns TRIGGER AS $$
+BEGIN
+INSERT INTO public.timeline
+(
+  id,
+  event,
+  description,
+  timestamp
+)
+VALUES
+(
+  new.id,
+  'SIGN_IN',
+  new.raw_app_meta_data->>'provider',
+  new.last_sign_in_at
+);
+return new;
+end;$$ language plpgsql security definer;
+
+CREATE TRIGGER on_sign_in AFTER INSERT OR UPDATE
+OF last_sign_in_at ON auth.users FOR EACH ROW WHEN (
+  new.last_sign_in_at IS NOT NULL
+) EXECUTE PROCEDURE public.add_sign_in();
+```
+
+</details>
