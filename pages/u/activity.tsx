@@ -1,11 +1,65 @@
+import { useEffect, useState } from 'react';
 import type { NextPage, GetServerSideProps } from 'next';
+import type { User as UserTypes } from '@supabase/gotrue-js';
+import NextLink from 'next/link';
+import { Link, Loading, Text, useToasts } from '@geist-ui/react';
 import { MetaHead } from '@/libs/components/.';
-import { supabase } from '@/supabase/.';
+import { Page, Summary, Timeline } from '@/components/.';
+import { definitions, supabase } from '@/supabase/.';
 
-const Activity: NextPage = () => {
+interface Props {
+  user: UserTypes;
+}
+
+const Activity: NextPage<Props> = ({ user }: Props) => {
+  const [profile, setProfile] = useState<definitions['profile'] | null>(null);
+  const [timeline, setTimeline] = useState<definitions['timeline'][] | null>(null);
+  const [, setToast] = useToasts();
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.from<definitions['profile']>('profile').select();
+      if (error) return setToast({ text: error.message, type: 'error' });
+      if (data) setProfile(data[0]);
+    })();
+    (async () => {
+      const { data, error } = await supabase.from<definitions['timeline']>('timeline').select();
+      if (error) return setToast({ text: error.message, type: 'error' });
+      if (data) setTimeline(data.reverse());
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <MetaHead title="Activity" />
+      <Page className="grid grid-cols-2 gap-5 md:grid-cols-1">
+        <div>
+          <Text h5>Summary</Text>
+          {profile ? (
+            <Summary user={user} profile={profile} className="my-5" />
+          ) : (
+            <div className="h-20">
+              <Loading />
+            </div>
+          )}
+          <NextLink href="/u/settings">
+            <Link color underline className="text-sm">
+              View Account Settings &rarr;
+            </Link>
+          </NextLink>
+        </div>
+        <div>
+          <Text h5>Timeline</Text>
+          {timeline ? (
+            <Timeline data={timeline} />
+          ) : (
+            <div className="h-20">
+              <Loading />
+            </div>
+          )}
+        </div>
+      </Page>
     </>
   );
 };
