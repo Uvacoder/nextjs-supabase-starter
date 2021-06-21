@@ -4,8 +4,10 @@ import { Fieldset, Button, useToasts, Input, Loading, Image, Radio } from '@geis
 import { MetaHead } from '@/libs/components/.';
 import { Page } from '@/components/.';
 import { definitions, supabase } from '@/supabase/.';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 const Settings: NextPage = () => {
+  const { register: r1, handleSubmit: h1, formState: f1 } = useForm<{ full_name: string }>();
   const [profile, setProfile] = useState<definitions['profile'] | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [, setToast] = useToasts();
@@ -22,31 +24,52 @@ const Settings: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateName: SubmitHandler<{ full_name: string }> = async ({ full_name }) => {
+    if (full_name === profile?.full_name)
+      return setToast({ text: 'Your account name was updated successfully', type: 'success' });
+    const { data, error } = await supabase
+      .from<definitions['profile']>('profile')
+      .update({ full_name: full_name || (null as never) })
+      .match({ email: profile?.email });
+    if (error) return setToast({ text: error.message, type: 'error' });
+    if (data) {
+      setToast({ text: 'Your account name was updated successfully', type: 'success' });
+      setProfile(data[0]);
+    }
+  };
+
   return (
     <>
       <MetaHead title="Settings" />
       <Page className="grid three-one gap-5">
         {profile ? (
           <div className="grid gap-5">
-            <Fieldset>
-              <Fieldset.Title>Account Name</Fieldset.Title>
-              <Fieldset.Subtitle>
-                Please enter your full name, or a display name you are comfortable with.
-              </Fieldset.Subtitle>
-              <div className="max-w-sm sm:max-w-full">
-                <Input width="100%" initialValue={profile.full_name} />
-              </div>
-              <Fieldset.Footer>
-                <Fieldset.Footer.Status>
-                  Please use 32 characters at maximum.
-                </Fieldset.Footer.Status>
-                <Fieldset.Footer.Actions>
-                  <Button auto size="small" type="secondary">
-                    Update
-                  </Button>
-                </Fieldset.Footer.Actions>
-              </Fieldset.Footer>
-            </Fieldset>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <Fieldset>
+                <Fieldset.Title>Account Name</Fieldset.Title>
+                <Fieldset.Subtitle>
+                  Please enter your full name, or a display name you are comfortable with.
+                </Fieldset.Subtitle>
+                <div className="max-w-sm sm:max-w-full">
+                  <Input
+                    width="100%"
+                    status={f1.errors.full_name && 'error'}
+                    initialValue={profile.full_name}
+                    {...r1('full_name', { maxLength: 32 })}
+                  />
+                </div>
+                <Fieldset.Footer>
+                  <Fieldset.Footer.Status>
+                    Please use 32 characters at maximum.
+                  </Fieldset.Footer.Status>
+                  <Fieldset.Footer.Actions>
+                    <Button auto size="small" type="secondary" onClick={h1(updateName)}>
+                      Update
+                    </Button>
+                  </Fieldset.Footer.Actions>
+                </Fieldset.Footer>
+              </Fieldset>
+            </form>
             <Fieldset className="relative">
               <div className="absolute top-10 right-10 sm:static mb-5">
                 <Image
