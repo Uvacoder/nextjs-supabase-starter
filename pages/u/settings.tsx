@@ -38,6 +38,20 @@ const Settings: NextPage = () => {
     }
   };
 
+  const updateAvatar = async () => {
+    if (avatar === profile?.avatar_type)
+      return setToast({ text: 'Your profile avatar was updated successfully', type: 'success' });
+    const { data, error } = await supabase
+      .from<definitions['profile']>('profile')
+      .update({ avatar_type: avatar ?? 'marble' })
+      .match({ email: profile?.email });
+    if (error) return setToast({ text: error.message, type: 'error' });
+    if (data) {
+      setToast({ text: 'Your profile avatar was updated successfully', type: 'success' });
+      setProfile(data[0]);
+    }
+  };
+
   return (
     <>
       <MetaHead title="Settings" />
@@ -100,7 +114,7 @@ const Settings: NextPage = () => {
                   Avatar artwork by Hayk An and Josep Martins.
                 </Fieldset.Footer.Status>
                 <Fieldset.Footer.Actions>
-                  <Button auto size="small" type="secondary">
+                  <Button auto size="small" type="secondary" onClick={updateAvatar}>
                     Update
                   </Button>
                 </Fieldset.Footer.Actions>
