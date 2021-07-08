@@ -29,7 +29,8 @@ const Settings: NextPage = () => {
       return setToast({ text: 'Your account name was updated successfully', type: 'success' });
     const { data, error } = await supabase
       .from<definitions['profile']>('profile')
-      .update({ full_name: full_name || (null as never) })
+      // @ts-expect-error: undefined not supported for psql
+      .update({ full_name: full_name || null })
       .match({ email: profile?.email });
     if (error) return setToast({ text: error.message, type: 'error' });
     if (data) {
