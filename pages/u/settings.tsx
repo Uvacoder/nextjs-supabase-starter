@@ -25,7 +25,7 @@ const Settings: NextPage = () => {
   }, []);
 
   const updateName: SubmitHandler<{ full_name: string }> = async ({ full_name }) => {
-    if (full_name === profile?.full_name)
+    if (full_name === profile?.full_name || (full_name === '' && profile?.full_name === null))
       return setToast({ text: 'Your account name was updated successfully', type: 'success' });
     const { data, error } = await supabase
       .from<definitions['profile']>('profile')

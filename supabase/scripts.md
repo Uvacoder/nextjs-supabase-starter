@@ -65,7 +65,7 @@ CREATE TABLE timeline (
   task SERIAL NOT NULL PRIMARY KEY,
   id UUID NOT NULL,
   event TEXT NOT NULL,
-  description TEXT NOT NULL,
+  description TEXT,
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT Timezone('utc'::text, Now()) NOT NULL
 );
 
