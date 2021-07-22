@@ -93,6 +93,30 @@ CREATE TRIGGER on_sign_in AFTER INSERT OR UPDATE
 OF last_sign_in_at ON auth.users FOR EACH ROW WHEN (
   new.last_sign_in_at IS NOT NULL
 ) EXECUTE PROCEDURE public.add_sign_in();
+
+CREATE OR REPLACE FUNCTION public.add_name_change()
+returns TRIGGER AS $$
+BEGIN
+INSERT INTO public.timeline
+(
+  id,
+  event,
+  description,
+  timestamp
+)
+VALUES
+(
+  new.id,
+  'NAME_CHANGE',
+  new.full_name,
+  current_timestamp
+);
+return new;
+end;$$ language plpgsql security definer;
+
+CREATE TRIGGER on_name_change AFTER UPDATE
+OF full_name ON public.profile FOR EACH ROW
+EXECUTE PROCEDURE public.add_name_change();
 ```
 
 </details>

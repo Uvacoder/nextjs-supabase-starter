@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { definitions } from '@/supabase/.';
-import { PlusCircle } from './icons';
+import { GearCircle, PlusCircle } from './icons';
 
 interface Props {
   data: Array<definitions['timeline']>;
@@ -34,6 +34,15 @@ const Timeline = ({ data, className }: Props): React.ReactElement => {
         icon: <PlusCircle />,
         text: `You logged in via`,
         bold: item.description.charAt(0).toUpperCase() + item.description.slice(1),
+        time: item.timestamp,
+      };
+    if (item.event === 'NAME_CHANGE')
+      return {
+        icon: <GearCircle />,
+        text: `You ${item.description ? 'changed' : 'removed'} your ${
+          item.description ? 'name to' : 'account name'
+        }`,
+        bold: `${item.description || ''}`,
         time: item.timestamp,
       };
   });
