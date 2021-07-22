@@ -117,6 +117,30 @@ end;$$ language plpgsql security definer;
 CREATE TRIGGER on_name_change AFTER UPDATE
 OF full_name ON public.profile FOR EACH ROW
 EXECUTE PROCEDURE public.add_name_change();
+
+CREATE OR REPLACE FUNCTION public.add_avatar_change()
+returns TRIGGER AS $$
+BEGIN
+INSERT INTO public.timeline
+(
+  id,
+  event,
+  description,
+  timestamp
+)
+VALUES
+(
+  new.id,
+  'AVATAR_CHANGE',
+  new.avatar_type,
+  current_timestamp
+);
+return new;
+end;$$ language plpgsql security definer;
+
+CREATE TRIGGER on_avatar_change AFTER UPDATE
+OF avatar_type ON public.profile FOR EACH ROW
+EXECUTE PROCEDURE public.add_avatar_change();
 ```
 
 </details>

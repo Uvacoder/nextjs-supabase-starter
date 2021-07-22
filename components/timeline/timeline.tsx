@@ -42,7 +42,14 @@ const Timeline = ({ data, className }: Props): React.ReactElement => {
         text: `You ${item.description ? 'changed' : 'removed'} your ${
           item.description ? 'name to' : 'account name'
         }`,
-        bold: `${item.description || ''}`,
+        bold: item.description,
+        time: item.timestamp,
+      };
+    if (item.event === 'AVATAR_CHANGE')
+      return {
+        icon: <GearCircle />,
+        text: `You changed your avatar to`,
+        bold: item.description,
         time: item.timestamp,
       };
   });
