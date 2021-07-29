@@ -53,6 +53,23 @@ EXECUTE PROCEDURE public.create_new_profile();
 
 </details>
 
+<details>
+<summary>Configure RLS Policy</summary>
+
+```sql
+ALTER TABLE public.profile ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Enable select for profile based on id"
+ON public.profile FOR SELECT
+USING (auth.uid() = id);
+
+CREATE POLICY "Enable update for profile based on id"
+ON public.profile FOR UPDATE
+USING (auth.uid() = id) WITH CHECK (auth.email() = email);
+```
+
+</details>
+
 ### Timeline
 
 Create a registry of user actions to map out a timeline. Actions such as `SIGN_IN` are accounted for the log. Each action has an `event`, `description`, and `timestamp` which is tied to an `id`. The `SIGN_IN` event provides the authentication method used.
@@ -141,6 +158,19 @@ end;$$ language plpgsql security definer;
 CREATE TRIGGER on_avatar_change AFTER UPDATE
 OF avatar_type ON public.profile FOR EACH ROW
 EXECUTE PROCEDURE public.add_avatar_change();
+```
+
+</details>
+
+<details>
+<summary>Configure RLS Policy</summary>
+
+```sql
+ALTER TABLE public.timeline ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Enable select for timeline based on id"
+ON public.timeline FOR SELECT
+USING (auth.uid() = id);
 ```
 
 </details>
