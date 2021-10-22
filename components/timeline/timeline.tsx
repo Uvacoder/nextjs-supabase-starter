@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Pagination } from '@geist-ui/react';
 import moment from 'moment';
 import { definitions } from '@/supabase/.';
 import { GearCircle, PlusCircle } from './icons';
@@ -9,6 +10,9 @@ interface Props {
 }
 
 const Timeline = ({ data, className }: Props): React.ReactElement => {
+  const itemsOnPage = 12;
+  const [page, setPage] = useState({ start: 0, end: itemsOnPage });
+
   moment.updateLocale('en', {
     relativeTime: {
       future: 'in %s',
@@ -28,7 +32,7 @@ const Timeline = ({ data, className }: Props): React.ReactElement => {
     },
   });
 
-  const list = data.map((item) => {
+  const list = data.slice(page.start, page.end).map((item) => {
     if (item.event === 'SIGN_IN')
       return {
         icon: <PlusCircle />,
@@ -69,6 +73,13 @@ const Timeline = ({ data, className }: Props): React.ReactElement => {
           </li>
         ))}
       </ul>
+      <div className="flex justify-center mt-3">
+        <Pagination
+          count={Math.ceil(data.length / itemsOnPage)}
+          initialPage={1}
+          onChange={(p) => setPage({ start: (p - 1) * itemsOnPage, end: p * itemsOnPage })}
+        />
+      </div>
       <style jsx>{`
         ul::before {
           content: '';
