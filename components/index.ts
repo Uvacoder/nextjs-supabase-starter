@@ -4,3 +4,4 @@ export { default as Header } from './header';
 export { default as Verify } from './verify';
 export { default as Summary } from './summary';
 export { default as Timeline } from './timeline';
+export { default as Footer } from './footer';

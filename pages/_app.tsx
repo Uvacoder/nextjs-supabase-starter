@@ -3,6 +3,7 @@ import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { CssBaseline, GeistProvider } from '@geist-ui/react';
+import { Footer } from '@/components/.';
 import { UserMenu } from '@/libs/components/.';
 import { supabase } from '@/supabase/.';
 import 'tailwindcss/tailwind.css';
@@ -33,6 +34,7 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
         <CssBaseline />
         <UserMenu />
         <Component {...pageProps} />
+        <Footer />
       </GeistProvider>
       <style global jsx>{`
         .canvas {
