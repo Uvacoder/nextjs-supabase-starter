@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { NextPage, GetServerSideProps } from 'next';
 import type { User as UserTypes } from '@supabase/supabase-js';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { Button, Card, Link, Text, User, Loading, useToasts } from '@geist-ui/react';
 import { Clock, CheckInCircle } from '@geist-ui/react-icons';
 import moment from 'moment';
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const Overview: NextPage<Props> = ({ user }: Props) => {
+  const router = useRouter();
   const [profile, setProfile] = useState<definitions['profile'] | null>(null);
   const [, setToast] = useToasts();
 
@@ -43,7 +45,9 @@ const Overview: NextPage<Props> = ({ user }: Props) => {
                 Get started with creating a new secret, add notes or description and secure it with
                 a personal identification number.
               </Text>
-              <Button type="secondary">Create New Secret</Button>
+              <Button type="secondary" onClick={() => router.push('/u/new')}>
+                Create New Secret
+              </Button>
             </div>
           </Card>
           <div className="mt-5 grid">
