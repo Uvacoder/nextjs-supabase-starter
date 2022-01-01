@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import type { NextPage, GetServerSideProps } from 'next';
 import type { User as UserTypes } from '@supabase/gotrue-js';
+import type { NewSecretTypes } from '@/libs/form-data';
 import { useRouter } from 'next/router';
 import { MetaHead } from '@/libs/components/.';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Input, Text, Textarea } from '@geist-ui/react';
 import { RefreshCcw, AtSign, ArrowLeft } from '@geist-ui/react-icons';
 import { supabase } from '@/supabase/.';
@@ -13,27 +15,51 @@ interface Props {
 
 const New: NextPage<Props> = ({ user }: Props) => {
   const router = useRouter();
-  const [password, setPassword] = useState<string>('');
+  const { register, handleSubmit, formState, setError, clearErrors, setValue } =
+    useForm<NewSecretTypes>();
   const [hideUser, setHideUser] = useState<boolean>(true);
+
+  const onChange = (): void => clearErrors(['password', 'confirm']);
+
+  const onSubmit: SubmitHandler<NewSecretTypes> = (data: NewSecretTypes) => {
+    if (data.password !== data.confirm) {
+      return (
+        [
+          { type: 'conflict', name: 'password' },
+          { type: 'conflict', name: 'confirm' },
+        ] as const
+      ).forEach(({ name, type }) => {
+        setError(name, { type });
+      });
+    }
+  };
 
   return (
     <>
       <MetaHead title="New Secret" />
       <section className="min-h-screen flex justify-center items-center">
         <div className="z-10 bg-white px-8 py-10 rounded-md">
-          <form className="grid gap-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3">
             <div className="flex items-center justify-between gap-5 mb-2">
               <h4 className="m-0">Create New Secret</h4>
               <Button icon={<ArrowLeft />} auto size="small" onClick={() => router.back()} />
             </div>
-            <Input width="100%" placeholder="Acme Inc.">
+            <Input
+              width="100%"
+              status={formState.errors.organisation && 'error'}
+              {...register('organisation', { required: true })}
+              placeholder="Acme Inc."
+            >
               <Text small b>
                 Organisation
               </Text>
             </Input>
-            <Textarea placeholder="a short description ... (optional)" />
+            <Textarea
+              {...register('description')}
+              placeholder="a short description ... (optional)"
+            />
             <div className="flex items-end gap-3">
-              <Input clearable width="100%" initialValue={user.email}>
+              <Input clearable width="100%" {...register('email')} initialValue={user.email}>
                 <Text small b>
                   Email Address
                 </Text>
@@ -41,7 +67,7 @@ const New: NextPage<Props> = ({ user }: Props) => {
               <Button icon={<AtSign />} auto size="small" onClick={() => setHideUser(!hideUser)} />
             </div>
             {!hideUser && (
-              <Input width="100%">
+              <Input width="100%" {...register('username')}>
                 <Text small b>
                   Username
                 </Text>
@@ -50,8 +76,12 @@ const New: NextPage<Props> = ({ user }: Props) => {
             <div className="flex items-end gap-3">
               <Input.Password
                 width="100%"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                status={formState.errors.password && 'error'}
+                {...register('password', { required: true })}
+                onChange={(e) => {
+                  setValue('password', e.target.value);
+                  onChange();
+                }}
               >
                 <Text small b>
                   Password
@@ -62,7 +92,8 @@ const New: NextPage<Props> = ({ user }: Props) => {
                 auto
                 size="small"
                 onClick={() =>
-                  setPassword(
+                  setValue(
+                    'password',
                     Math.random().toString(36).slice(8) +
                       '@' +
                       Math.random().toString(36).slice(8).toUpperCase()
@@ -70,12 +101,17 @@ const New: NextPage<Props> = ({ user }: Props) => {
                 }
               />
             </div>
-            <Input.Password width="100%">
+            <Input.Password
+              width="100%"
+              status={formState.errors.confirm && 'error'}
+              {...register('confirm', { required: true })}
+              onChange={onChange}
+            >
               <Text small b>
                 Confirm Password
               </Text>
             </Input.Password>
-            <Button type="success-light" className="mt-3">
+            <Button htmlType="submit" type="success-light" className="mt-3">
               Save To Vault
             </Button>
           </form>
